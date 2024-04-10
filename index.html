@@ -5,35 +5,91 @@
     <title>LA TV Shows | Home</title>
     <meta name="description" content="A Catalog of Shows Set in Los Angeles">
     <link rel="stylesheet" href="style.css" />
-    <script type="text/javascript" src="scripts.js"></script>
 </head>
 
 <body>
-    <header class="main-header">
-        <h1 class="title">LA TV Shows</h1>
-    </header>
-    <div id="card-container">
+   
+    <div class="landing-image">
+        <img src="landing.jpeg" alt="Anime Collage">
+        <div class="image-overlay">
+        <div>
+            <div class="overlay-text">
+                Anime Catalog
+                
+            </div>
+            <div class="landing-button">
+            </div>
+        </div>   
+        </div>
         
+    </div>
+    
+
+    <input placeholder="Search for an Anime" name="Search for an Anime" id="searchInput" class="search-box">
+
+    
+   
+
+ 
+
+   <!-- <button onclick="removeLastCard();">
+        Remove A Card!
+    </button> -->
+     
+
+<div>
+    <form id="addAnimeForm" class="addForm" enctype="multipart/form-data">
+        <input type="text" id="titleInput" placeholder="Title">
+        <input type="text" id="genreInput" placeholder="Genre">
+        <input type="number" id="releaseYearInput" placeholder="Release Year">
+        <input type="number" id="ratingInput" placeholder="Rating">
+        <input type="file" id="imageInput" accept="image/*">
+        <button type="submit">Add Anime</button>
+    </form>
+    
+
+<div id="sort-options">
+    <label for="genre-selection">Sort by Genre:</label>
+    <select id="genre-selection" onchange="filterAnime()">
+        <option value="All">All Genres</option>
+        <option value="Action">Action</option>
+        <option value="Adventure">Adventure</option>
+        <option value="Fantasy">Fantasy</option>
+        <option value="Sports">Sports</option>
+        <option value="Romance">Romance</option>
+        <option value="Comedy">Comedy</option>
+        <option value="Horror">Horror</option>
+        <option value="Sci-Fi">Sci-Fi</option>
+        <option value="Drama">Drama</option>
+        <option value="Supernatural">Supernatural</option>
+    </select>
+
+   
+</div>
+</div>
+
+
+    <div id="card-container">
+       
     </div>
     <div class="card" style="display: none;">
         <div class="card-content">
-            <h2>TV Show Title</h2>
             <img src="" alt="TV Show Poster">
-            <ul>
-                <li>Bullet Point 1</li>
-                <li>Bullet Point 2</li>
-                <li>Bullet Point 3</li>
-            </ul>
+            <h5>TV Show Title</h5>
+            <button onclick="addToList(this)">Add</button> 
         </div>
     </div>
-    <div class="footer">
-        <button onclick="quoteAlert();">
-            Get A Quote!
-        </button>
-        <button onclick="removeLastCard();">
-            Remove A Card!
-        </button>
-    </div>
+    
+    
+
+    <hr>
+
+    <h1>Watchlist</h1>
+    <ul id="watchlist"></ul>
+
+   
+<script src="dataset.js" defer></script>
+<script src="scripts.js" defer></script>
 </body>
 
 </html>

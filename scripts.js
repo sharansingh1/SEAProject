@@ -34,54 +34,70 @@ let titles = [
     "Curb Your Enthusiasm",
     "East Los High"
 ];
+
+let watchList = []; 
 // Your final submission should have much more data than this, and 
 // you should use more than just an array of strings to store it all.
 
 
 // This function adds cards the page to display the data in the array
-function showCards() {
+// Add an event listener to the search input
+document.getElementById("searchInput").addEventListener("input", function(event) {
+    const searchQuery = event.target.value.trim().toLowerCase();
+    showCards(searchQuery); 
+});
+
+function showCards(searchQuery) {
     const cardContainer = document.getElementById("card-container");
     cardContainer.innerHTML = "";
     const templateCard = document.querySelector(".card");
     
-    for (let i = 0; i < titles.length; i++) {
-        let title = titles[i];
-
-        // This part of the code doesn't scale very well! After you add your
-        // own data, you'll need to do something totally different here.
-        let imageURL = "";
-        if (i == 0) {
-            imageURL = FRESH_PRINCE_URL;
-        } else if (i == 1) {
-            imageURL = CURB_POSTER_URL;
-        } else if (i == 2) {
-            imageURL = EAST_LOS_HIGH_POSTER_URL;
+    animeMap.forEach((animeData, title) => {
+        if (!searchQuery || title.toLowerCase().includes(searchQuery)) {
+            const nextCard = templateCard.cloneNode(true);
+            editCardContent(nextCard, title, animeData);
+            cardContainer.appendChild(nextCard);
         }
-
-        const nextCard = templateCard.cloneNode(true); // Copy the template card
-        editCardContent(nextCard, title, imageURL); // Edit title and image
-        cardContainer.appendChild(nextCard); // Add new card to the container
-    }
+    });
 }
 
-function editCardContent(card, newTitle, newImageURL) {
+function editCardContent(card, title, animeData) {
     card.style.display = "block";
 
-    const cardHeader = card.querySelector("h2");
-    cardHeader.textContent = newTitle;
+    const cardHeader = card.querySelector("h5");
+    cardHeader.textContent = title;
 
     const cardImage = card.querySelector("img");
-    cardImage.src = newImageURL;
-    cardImage.alt = newTitle + " Poster";
-
-    // You can use console.log to help you debug!
-    // View the output by right clicking on your website,
-    // select "Inspect", then click on the "Console" tab
-    console.log("new card:", newTitle, "- html: ", card);
+    cardImage.src = animeData.imageUrl; 
+    cardImage.alt = title + " Poster";
 }
 
-// This calls the addCards() function when the page is first loaded
-document.addEventListener("DOMContentLoaded", showCards);
+document.getElementById("addAnimeForm").addEventListener("submit", function(event) {
+    event.preventDefault(); 
+
+    const title = document.getElementById("titleInput").value;
+    const genre = document.getElementById("genreInput").value;
+    const releaseYear = parseInt(document.getElementById("releaseYearInput").value);
+    const rating = parseFloat(document.getElementById("ratingInput").value);
+    const imageFile = document.getElementById("imageInput").files[0]; 
+    const imageUrl = URL.createObjectURL(imageFile);
+
+    animeMap.set(title, {
+        title: title,
+        genre: genre.split(","),
+        releaseYear: releaseYear,
+        rating: rating,
+        imageUrl: imageUrl 
+    });
+
+    showCards();
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    showCards(); 
+});
 
 function quoteAlert() {
     console.log("Button Clicked!")
@@ -89,6 +105,60 @@ function quoteAlert() {
 }
 
 function removeLastCard() {
-    titles.pop(); // Remove last item in titles array
-    showCards(); // Call showCards again to refresh
+    animeMap.pop(); 
+    showCards(); 
 }
+
+document.getElementById("genre-selection").addEventListener("change", function() {
+    const selectedGenre = this.value; 
+    filterAnime(selectedGenre); 
+});
+
+function filterAnime(genre) {
+    const filteredAnime = new Map();
+  
+    animeMap.forEach((animeData, title) => {
+        if (animeData.genre.includes(genre)) {
+            filteredAnime.set(title, animeData);
+        }
+    });
+
+    displayFilteredAnime(filteredAnime);
+}
+
+function displayFilteredAnime(filteredAnime) {
+    const cardContainer = document.getElementById("card-container");
+    cardContainer.innerHTML = ""; 
+
+    filteredAnime.forEach((animeData, title) => {
+        const templateCard = document.querySelector(".card").cloneNode(true);
+        editCardContent(templateCard, title, animeData);
+        cardContainer.appendChild(templateCard);
+    });
+}
+
+
+function addToList(button) {
+    const title = button.previousElementSibling.textContent; 
+    watchList.push(title);
+    displayWatchlist();
+}
+
+
+function displayWatchlist() {
+    const watchlistContainer = document.getElementById("watchlist");
+    watchlistContainer.innerHTML = ""; 
+
+    watchList.forEach(title => {
+        const listItem = document.createElement("li");
+        listItem.textContent = title;
+        watchlistContainer.appendChild(listItem);
+    });
+}
+
+document.getElementById("addAnimeForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const title = document.getElementById("titleInput").value;
+    addToList(title);
+    document.getElementById("titleInput").value = "";
+});
